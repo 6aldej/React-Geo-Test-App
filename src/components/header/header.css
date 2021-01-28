@@ -1,0 +1,30 @@
+.header-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5vh;
+    height: 60px;
+    background-color: #e3f6f5;
+}
+
+.header-links {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.header-links li {
+    padding: 20px;
+    font-size: 18px;
+}
+
+.header-links li:hover {
+    border-radius: 5px;
+    background: #bae8e8;
+}
+
+
+.header-links li a:hover, .active {
+    border-bottom: solid 1px;
+}
