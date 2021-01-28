@@ -8,45 +8,28 @@ import FormPage from './pages/formPage';
 import HomePage from './pages/homePage';
 import PageNotFound from './pages/notFoundPage'
 
-export default class App extends Component {
+import {connect} from 'react-redux';
+import {setStateId, setStateData, setStateDataArr} from './store/actions/actionApp'
 
-    state = {
-      data: [],
-      id: 0
-    };
+class App extends Component {
 
   deleteItem(id) {
-    this.setState(({data}) => {
-        const index = data.findIndex(elem => elem.id === id);
-        
-        const before = data.slice(0, index);
-        const after = data.slice(index + 1);
-
-        const newArr = [...before, ...after];
-
-        return {
-            data: newArr
-        }
-    });
+    const {data} = this.props,
+          index = data.findIndex(elem => elem.id === id),
+          before = data.slice(0, index),
+          after = data.slice(index + 1),
+          newArr = [...before, ...after];
+    this.props.setStateDataArr(newArr);
   }
 
   addItem(name, number) {
-    
-    this.setState({
-      id: this.state.id + 1
-    })
-
+    this.props.setStateId();
     const newItem = {
         names: name,
         phone: number,
-        id: this.state.id
+        id: this.props.id
     };
-    this.setState(({data}) => {
-        const newArr = [newItem,...data];
-        return {
-            data: newArr
-        }
-    })
+    this.props.setStateData(newItem);
   }
 
   render() {
@@ -63,18 +46,11 @@ export default class App extends Component {
               <Route 
                 path='/form'
                 exact
-                render={() => {
-                  return <FormPage 
-                          onAdd={this.addItem.bind(this)}/>
-                }}/>
+                render={() => {return <FormPage onAdd={this.addItem.bind(this)}/>}}/>
               <Route 
                 path='/collection'
                 exact
-                render={() => {
-                  return <CollectionPage 
-                          users={this.state.data} 
-                          onDelete={this.deleteItem.bind(this)}/>
-                }}/>
+                render={() => {return <CollectionPage users={this.props.data} onDelete={this.deleteItem.bind(this)}/>}}/>
               <Route path="*" component={PageNotFound} />
             </Switch>
           </div>
@@ -83,3 +59,18 @@ export default class App extends Component {
     )
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    data: state.app.data,
+    id: state.app.id
+  }
+}
+
+const mapDispatchToProps = {
+  setStateId,
+  setStateData,
+  setStateDataArr
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

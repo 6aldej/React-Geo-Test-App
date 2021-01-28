@@ -4,37 +4,27 @@ import toCamelCase from '../../utils/toCamelCase';
 import toPhoneNumber from '../../utils/toPhoneNumber';
 import './addForm.css';
 
-export default class AddForm extends Component {
-    state = {
-        name: '',
-        number: ''
-    }
+import {connect} from 'react-redux';
+import { setNameText, setNumberText, resetState } from '../../store/actions/actionForm';
+
+class AddForm extends Component {
 
     onNameChange(event) {
-        let enter = event.target.value;
-        this.setState({
-            name: enter,
-        })
+        this.props.setNameText(event.target.value);
     }
 
     onNumberChange(event) {
-        let enter = event.target.value;
-        this.setState({
-            number: enter,
-        })
+        this.props.setNumberText(event.target.value);
     }
 
     onSubmit(event){
         event.preventDefault();
-        let {name, number} = this.state
-        this.props.onAdd(toCamelCase(name), toPhoneNumber(number));
-        this.setState({
-            name: '',
-            number: ''
-        });
+        this.props.onAdd(toCamelCase(this.props.name), toPhoneNumber(this.props.number));
+        this.props.resetState();
     }
 
     render() {
+        console.log('ADD FORM PROPS',this.props);
         return (
             <Form 
                 onSubmit={this.onSubmit.bind(this)}
@@ -45,7 +35,7 @@ export default class AddForm extends Component {
                     placeholder="Введите имя"
                     className="input-user"
                     onChange={this.onNameChange.bind(this)}
-                    value={this.state.name}
+                    value={this.props.name}
                 />
                 <Label for="phoneUser">Телефон</Label>
                 <Input
@@ -53,7 +43,7 @@ export default class AddForm extends Component {
                     placeholder="Введите телефон"
                     className="input-user"
                     onChange={this.onNumberChange.bind(this)}
-                    value={this.state.number}
+                    value={this.props.number}
                 />
                 <Button
                     className="btn-save"
@@ -65,3 +55,18 @@ export default class AddForm extends Component {
         )
     }
 }
+
+const mapStateToProps = state => {
+    return {
+      name: state.form.name,
+      number: state.form.number
+    };
+}
+  
+const mapDispatchToProps = {
+    setNameText,
+    setNumberText,
+    resetState
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddForm);

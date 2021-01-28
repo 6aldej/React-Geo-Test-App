@@ -2,8 +2,6 @@ import React from 'react';
 import UserListItem from '../userListItem';
 import { Table } from 'reactstrap';
 
-import './userList.css';
-
 const UserList = ({users, onDelete}) => {
 
     const elements = users.map((item => {
